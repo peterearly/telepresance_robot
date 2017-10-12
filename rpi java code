@@ -1,0 +1,28 @@
+var Blynk = require('blynk-library');
+
+var AUTH = '9a081e42c21549b6a9f7f014e77ccbb9';
+
+var blynk = new Blynk.Blynk(AUTH);
+
+
+var v3 = new blynk.VirtualPin(3);
+var v4 = new blynk.VirtualPin(4);
+
+
+v3.on('write', function(param) {
+  console.log('x-axis:', param[0]);
+  console.log('y-axis:', param[1])
+  board.io.i2cWrite(0x04,0x01, param);
+});
+
+v4.on('write', function(param) {
+  console.log('y-axis:', param[0]);
+  board.io.i2cWrite(0x04,0x02, param);
+});
+
+const Raspi = require('raspi-io');
+const five = require('johnny-five');
+const board = new five.Board({
+  io: new Raspi()
+});
+
