@@ -1,35 +1,51 @@
+//Include the Serialport library
 var SerialPort = require("serialport");
-var serialport = new Serialport("/dev/ttyACM0", 9600);
+
+//Create an instance of the serial port monitor
+var serialport = new SerialPort("/dev/ttyACM0", 9600);
 
 var Blynk = require('blynk-library');
 
 var AUTH = '9a081e42c21549b6a9f7f014e77ccbb9';
 
 var blynk = new Blynk.Blynk(AUTH);
-
-
-var v3 = new blynk.VirtualPin(3);
-var v4 = new blynk.VirtualPin(4);
 var x = [101];
 var y = [102];
+var v3 = new blynk.VirtualPin(3);
+var v4 = new blynk.VirtualPin(4);
+
+//serialport.on('open', onOpen);
+
+//serialport.on('data', onData);
+
+//function onOpen() {
+//console.log('Serial Port Is Open');
+//}
+
+//function onData(d) {
+//console.log("Data: " + d);
+//serialport.write('r');
+//}
+v4.on('write', function(slide) {
+console.log('slider:', slide[0]);
+serialport.write(y);
+serialport.write(slide);
+});
 
 v3.on('write', function(param) {
   console.log('x-axis:', param[0]);
   console.log('y-axis:', param[1])
   serialport.write(x);
   serialport.write(param);
-//  board.io.i2cWrite(0x04,0x01, param);
 });
 
-v4.on('write', function(param) {
-  console.log('y-axis:', param[0]);
-  serialport.write(y);
-  serialport.write(param);
-  //board.io.i2cWrite(0x04,0x02, param);
-});
-
-//const Raspi = require('raspi-io');
+const Raspi = require('raspi-io');
 //const five = require('johnny-five');
 //const board = new five.Board({
 //  io: new Raspi()
+//});
+
+//board.on('ready', () => {
+  //new five.Pin(13);
+//  board.io.i2cWrite(0x04, 0x5, 10);
 //});
